@@ -3,28 +3,31 @@ import { cn } from '@/lib/utils';
 import { getCurrentDay } from '@/lib/day';
 import { Github } from 'lucide-react';
 function App() {
-  const [currentDay, setCurrentDay] = useState(0);
-  const [yearProgress, setYearProgress] = useState(0);
-  const [daysInYear, setDaysInYear] = useState(0);
+  type DateObj = ReturnType<typeof getCurrentDay>;
+  // const [currentDay, setCurrentDay] = useState(0);
+  // const [yearProgress, setYearProgress] = useState(0);
+  // const [daysInYear, setDaysInYear] = useState(0);
+  const [data, setData] = useState<DateObj>(getCurrentDay());
 
   useEffect(() => {
     const calculateDays = () => {
-      const { day, yearProgress, daysInYear } = getCurrentDay();
-      setCurrentDay(day);
-      setYearProgress(yearProgress);
-      setDaysInYear(daysInYear);
+      const data = getCurrentDay();
+      // setCurrentDay(data.day);
+      // setYearProgress(data.yearProgress);
+      // setDaysInYear(data.daysInYear);
+      setData(data);
     };
 
     calculateDays();
     
   }, []);
 
-  const days = Array.from({ length:  daysInYear }, (_, i) => i + 1);
+  const days = Array.from({ length: data.daysInYear }, (_, i) => i + 1);
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900 p-4">
       <div className="max-w-2xl mx-auto space-y-8">
-        <div className="space-y-2">
+        <div className="flex flex-col space-y-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-neutral-800">Time Grid - {new Date().toLocaleDateString()}</h1>
             <div className="text-sm text-neutral-500">
@@ -34,12 +37,31 @@ function App() {
               </a>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          {/* year */}
+          <div className="flex items-end space-x-4">
             <div className="text-4xl font-bold text-emerald-600">
-              {yearProgress.toFixed(1)}%
+              {data.yearProgress?.toFixed(1)}%
             </div>
             <div className="text-sm text-neutral-500">
-              Day {currentDay} of {daysInYear}
+              {data.day}/{data.daysInYear}
+            </div>
+          </div>
+          {/* Month */}
+          <div className="flex items-end space-x-4">
+            <div className="text-2xl font-bold text-emerald-600">
+              {data.monthProgress?.toFixed(1)}%
+            </div>
+            <div className="text-sm text-neutral-500">
+              {data.dayOfMonth}/{data.daysInMonth}
+            </div>
+          </div>
+          {/* Week */}
+          <div className="flex items-end space-x-4">
+            <div className="text-xl font-bold text-emerald-600">
+              {data.weekProgress?.toFixed(1)}%
+            </div>
+            <div className="text-sm text-neutral-500">
+              {data.dayOfWeek}/7, W{data.week}
             </div>
           </div>
         </div>
@@ -50,10 +72,10 @@ function App() {
               key={day}
               className={cn(
                 'aspect-square rounded-md transition-colors',
-                day < currentDay && 'bg-neutral-200',
-                day === currentDay && 'bg-emerald-600 blink',
+                day < data.day && 'bg-neutral-200',
+                day === data.day && 'bg-emerald-600 blink',
                 // day === currentDay && isBlinking && 'bg-emerald-500',
-                day > currentDay && 'bg-white border border-neutral-100'
+                day > data.day && 'bg-white border border-neutral-100'
               )}
             />
           ))}

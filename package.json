@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:page": "wrangler pages deploy ./dist"
   },
   "dependencies": {
     "clsx": "^2.1.1",
